@@ -10,11 +10,18 @@ import { EXCURSIONS } from "@/data/excursions";
 
 type DropdownId = "tours" | "excursions" | null;
 
-const TOUR_LINKS = CITIES.map((c) => ({
-  label: `Tours from ${c.name}`,
-  note: c.epithet,
-  href: c.href,
-}));
+const TOUR_LINKS = [
+  {
+    label: "The Grand Traverse",
+    note: "12D Signature",
+    href: "/tours/the-grand-traverse",
+  },
+  ...CITIES.map((c) => ({
+    label: `Tours from ${c.name}`,
+    note: c.epithet,
+    href: c.href,
+  })),
+];
 
 const EXCURSION_LINKS = EXCURSIONS.map((e) => ({
   label: e.location,
