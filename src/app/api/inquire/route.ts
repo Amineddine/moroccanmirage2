@@ -47,6 +47,8 @@ export async function POST(req: Request) {
       Accept: "application/json",
       Origin: SITE_URL,
       Referer: `${SITE_URL}/contact`,
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
     },
     body: JSON.stringify({
       _subject: String(subject ?? `New inquiry — ${name}`),
@@ -57,10 +59,17 @@ export async function POST(req: Request) {
     }),
   });
 
-  const out = (await res.json().catch(() => null)) as { success?: string | boolean } | null;
+  const out = (await res.json().catch(() => null)) as {
+    success?: string | boolean;
+    message?: string;
+  } | null;
   if (!res.ok || !(out?.success === true || out?.success === "true")) {
+    console.error("FormSubmit relay failed:", res.status, out);
     return NextResponse.json(
-      { success: false, error: "The inquiry could not be delivered. Please try again." },
+      {
+        success: false,
+        error: `The inquiry could not be delivered${out?.message ? ` (${out.message})` : ""}. Please try again.`,
+      },
       { status: 502 }
     );
   }
