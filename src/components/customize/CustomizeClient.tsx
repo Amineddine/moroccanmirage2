@@ -72,9 +72,50 @@ export default function CustomizeClient() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(INITIAL);
   const [done, setDone] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const submit = async () => {
+    if (sending) return;
+    setSending(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/inquire", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: `New trip commission — ${form.name}`,
+          name: form.name,
+          email: form.email,
+          whatsapp: form.whatsapp,
+          arrival: form.arrival,
+          duration: form.duration,
+          composition: form.composition,
+          regions: form.region,
+          pacing: form.pacing,
+          accommodation: form.stay,
+          inspirations: form.inspirations.join(", "),
+          budget: form.budget,
+          desires: form.desires,
+        }),
+      });
+      const out = await res.json().catch(() => null);
+      if (!res.ok || !out?.success) throw new Error(out?.error);
+      setDone(true);
+      window.scrollTo({ top: 0 });
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "Something went wrong sending your commission. Please try again."
+      );
+    } finally {
+      setSending(false);
+    }
+  };
 
   const canAdvance = (() => {
     switch (step) {
@@ -94,8 +135,11 @@ export default function CustomizeClient() {
   })();
 
   const next = () => {
-    if (step === STEPS.length - 1) setDone(true);
-    else setStep((s) => s + 1);
+    if (step === STEPS.length - 1) {
+      void submit();
+      return;
+    }
+    setStep((s) => s + 1);
     window.scrollTo({ top: 0 });
   };
 
@@ -299,12 +343,18 @@ export default function CustomizeClient() {
           </button>
           <button
             onClick={next}
-            disabled={!canAdvance}
+            disabled={!canAdvance || sending}
             className="border border-gold/60 bg-gold/10 px-10 py-4 font-mono text-[11px] tracking-[0.3em] text-gold uppercase transition-colors duration-300 enabled:hover:bg-gold enabled:hover:text-abyss disabled:opacity-30"
           >
-            {step === STEPS.length - 1 ? "Submit Commission →" : "Continue →"}
+            {step === STEPS.length - 1 ? (sending ? "Sending…" : "Submit Commission →") : "Continue →"}
           </button>
         </div>
+
+        {error && (
+          <p className="mt-6 text-right text-[13px] leading-relaxed text-clay" role="alert">
+            {error}
+          </p>
+        )}
       </div>
     </main>
   );

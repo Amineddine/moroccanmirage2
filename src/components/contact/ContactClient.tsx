@@ -16,12 +16,42 @@ const SERVICES = [
 
 export default function ContactClient() {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
-    window.scrollTo({ top: 0 });
+    if (sending) return;
+    setSending(true);
+    setError(null);
+
+    const fd = new FormData(e.currentTarget);
+    const fields = Object.fromEntries(fd.entries());
+    const service = String(fields.service ?? "General");
+
+    try {
+      const res = await fetch("/api/inquire", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: `New inquiry — ${service} — ${String(fields.name ?? "")}`,
+          ...fields,
+        }),
+      });
+      const out = await res.json().catch(() => null);
+      if (!res.ok || !out?.success) throw new Error(out?.error);
+      setSent(true);
+      window.scrollTo({ top: 0 });
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : `Something went wrong. Please retry, or email us directly at ${BRAND.email}.`
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -111,10 +141,21 @@ export default function ContactClient() {
               >
                 <p className="plate-label">Inquiry Sheet — № 001</p>
 
+                {/* honeypot — hidden from humans, tempting to bots */}
+                <input
+                  type="text"
+                  name="botcheck"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                />
+
                 <div className="mt-10 grid gap-9 sm:grid-cols-2">
                   <Field label="Full Name *">
                     <input
                       required
+                      name="name"
                       className="field"
                       placeholder="Your full name"
                       value={name}
@@ -122,28 +163,35 @@ export default function ContactClient() {
                     />
                   </Field>
                   <Field label="Email *">
-                    <input required type="email" className="field" placeholder="you@example.com" />
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      className="field"
+                      placeholder="you@example.com"
+                    />
                   </Field>
                   <Field label="Phone / WhatsApp">
-                    <input className="field" placeholder="+1 ..." />
+                    <input name="phone" className="field" placeholder="+1 ..." />
                   </Field>
                   <Field label="Number of Guests">
-                    <input type="number" min={1} defaultValue={2} className="field" />
+                    <input type="number" name="guests" min={1} defaultValue={2} className="field" />
                   </Field>
                   <Field label="Service">
-                    <select className="field" defaultValue={SERVICES[0]}>
+                    <select name="service" className="field" defaultValue={SERVICES[0]}>
                       {SERVICES.map((s) => (
                         <option key={s}>{s}</option>
                       ))}
                     </select>
                   </Field>
                   <Field label="Preferred Travel Dates">
-                    <input className="field" placeholder="e.g. October 2026" />
+                    <input name="travel_dates" className="field" placeholder="e.g. October 2026" />
                   </Field>
                   <div className="sm:col-span-2">
                     <Field label="Message">
                       <textarea
                         rows={5}
+                        name="message"
                         className="field resize-none"
                         placeholder="Tell us about your dream Moroccan experience..."
                       />
@@ -153,10 +201,17 @@ export default function ContactClient() {
 
                 <button
                   type="submit"
-                  className="mt-12 w-full border border-gold/60 bg-gold/10 py-5 font-mono text-[11px] tracking-[0.32em] text-gold uppercase transition-colors duration-300 hover:bg-gold hover:text-abyss"
+                  disabled={sending}
+                  className="mt-12 w-full border border-gold/60 bg-gold/10 py-5 font-mono text-[11px] tracking-[0.32em] text-gold uppercase transition-colors duration-300 enabled:hover:bg-gold enabled:hover:text-abyss disabled:opacity-50"
                 >
-                  Send Inquiry →
+                  {sending ? "Sending…" : "Send Inquiry →"}
                 </button>
+
+                {error && (
+                  <p className="mt-5 text-center text-[13px] leading-relaxed text-clay" role="alert">
+                    {error}
+                  </p>
+                )}
 
                 <p className="mono-note mt-6 text-center !text-[9px]">
                   We will respond within 24 hours to begin crafting your journey.
