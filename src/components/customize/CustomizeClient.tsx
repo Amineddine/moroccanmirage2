@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { sendInquiry } from "@/lib/inquiry";
 import Reveal from "@/components/ui/Reveal";
 
 const STEPS = [
@@ -82,38 +83,27 @@ export default function CustomizeClient() {
     if (sending) return;
     setSending(true);
     setError(null);
-    try {
-      const res = await fetch("/api/inquire", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject: `New trip commission — ${form.name}`,
-          name: form.name,
-          email: form.email,
-          whatsapp: form.whatsapp,
-          arrival: form.arrival,
-          duration: form.duration,
-          composition: form.composition,
-          regions: form.region,
-          pacing: form.pacing,
-          accommodation: form.stay,
-          inspirations: form.inspirations.join(", "),
-          budget: form.budget,
-          desires: form.desires,
-        }),
-      });
-      const out = await res.json().catch(() => null);
-      if (!res.ok || !out?.success) throw new Error(out?.error);
+    const out = await sendInquiry({
+      subject: `New trip commission — ${form.name}`,
+      name: form.name,
+      email: form.email,
+      whatsapp: form.whatsapp,
+      arrival: form.arrival,
+      duration: form.duration,
+      composition: form.composition,
+      regions: form.region,
+      pacing: form.pacing,
+      accommodation: form.stay,
+      inspirations: form.inspirations.join(", "),
+      budget: form.budget,
+      desires: form.desires,
+    });
+    setSending(false);
+    if (out.success) {
       setDone(true);
       window.scrollTo({ top: 0 });
-    } catch (err) {
-      setError(
-        err instanceof Error && err.message
-          ? err.message
-          : "Something went wrong sending your commission. Please try again."
-      );
-    } finally {
-      setSending(false);
+    } else {
+      setError(out.error ?? "Something went wrong sending your commission. Please try again.");
     }
   };
 

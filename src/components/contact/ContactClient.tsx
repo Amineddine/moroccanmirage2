@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BRAND } from "@/data/site";
+import { sendInquiry } from "@/lib/inquiry";
 import Reveal from "@/components/ui/Reveal";
 import Coordinates from "@/components/atlas/Coordinates";
 
@@ -27,30 +28,21 @@ export default function ContactClient() {
     setError(null);
 
     const fd = new FormData(e.currentTarget);
-    const fields = Object.fromEntries(fd.entries());
-    const service = String(fields.service ?? "General");
+    const fields = Object.fromEntries(
+      Array.from(fd.entries()).map(([k, v]) => [k, String(v)])
+    );
+    const service = fields.service ?? "General";
 
-    try {
-      const res = await fetch("/api/inquire", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject: `New inquiry — ${service} — ${String(fields.name ?? "")}`,
-          ...fields,
-        }),
-      });
-      const out = await res.json().catch(() => null);
-      if (!res.ok || !out?.success) throw new Error(out?.error);
+    const out = await sendInquiry({
+      subject: `New inquiry — ${service} — ${fields.name ?? ""}`,
+      ...fields,
+    });
+    setSending(false);
+    if (out.success) {
       setSent(true);
       window.scrollTo({ top: 0 });
-    } catch (err) {
-      setError(
-        err instanceof Error && err.message
-          ? err.message
-          : `Something went wrong. Please retry, or email us directly at ${BRAND.email}.`
-      );
-    } finally {
-      setSending(false);
+    } else {
+      setError(out.error ?? `Something went wrong. Please retry, or email us directly at ${BRAND.email}.`);
     }
   };
 
