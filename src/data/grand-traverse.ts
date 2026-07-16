@@ -100,6 +100,15 @@ export const GRAND_TRAVERSE = {
     "Breathe Atlantic air on the ramparts of Essaouira (UNESCO).",
     "Marvel at the ocean-side Hassan II Mosque in Casablanca.",
   ],
+  // Odynovo-style "Notes for Quotation" — shown under the price on the tour page.
+  // ⚠︎ VERIFY: client to confirm the "valid before" date before publishing.
+  quotation: {
+    validBefore: "December 31, 2026",
+    notes: [
+      "Rates are per person based on two travelers sharing; a change in group size may affect the per-person price.",
+      "Prices are subject to availability at the time of confirmation and may vary during peak season, festivals and public holidays.",
+    ],
+  },
 } as const;
 
 export const GRAND_DAYS: GrandDay[] = [
@@ -367,6 +376,7 @@ export const GRAND_INCLUDED = [
   "Private, air-conditioned vehicle with a professional English-speaking driver-guide throughout",
   "Licensed local guides in Rabat, Fez, Marrakech & Essaouira",
   "Camel trek and overnight in Erg Chebbi",
+  "Entrance fees to the monuments and scenic spots listed in the itinerary",
   "All inter-city transfers and airport meet-and-greet (arrival & departure)",
   "Bottled water on board throughout",
   "All applicable local taxes",
@@ -375,7 +385,6 @@ export const GRAND_INCLUDED = [
 export const GRAND_EXCLUDED = [
   "International flights to/from Casablanca (CMN)",
   "Lunches and any meals not specified",
-  "Monument/site entrance fees unless stated", // ⚠︎ decide policy & state clearly
   "Travel insurance, gratuities/tips, and personal expenses",
   "Optional activities (4×4 dune driving, sandboarding, hammam, cooking classes, etc.)",
 ] as const;

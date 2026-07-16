@@ -227,6 +227,31 @@ export default function GrandTraversePage() {
                       {GT.priceNote} — final quote on inquiry
                     </p>
                   </div>
+
+                  {/* Notes for Quotation — Odynovo-style validity & pricing caveats */}
+                  <div className="border-t border-dashed border-bone/20 pt-6">
+                    <p className="plate-label">Notes for Quotation</p>
+                    <ul className="mt-5 space-y-3">
+                      <li className="flex items-start gap-3 text-[12.5px] leading-[1.7] text-bone-dim">
+                        <span aria-hidden className="mt-[7px] h-[5px] w-[5px] shrink-0 rotate-45 bg-gold" />
+                        <span>
+                          This offer is valid before{" "}
+                          <span className="text-bone">{GT.quotation.validBefore}</span>. Prices may
+                          change after this date. We recommend you book early to secure the best
+                          price.
+                        </span>
+                      </li>
+                      {GT.quotation.notes.map((note) => (
+                        <li
+                          key={note}
+                          className="flex items-start gap-3 text-[12.5px] leading-[1.7] text-muted"
+                        >
+                          <span aria-hidden className="mt-[7px] h-[5px] w-[5px] shrink-0 rotate-45 border border-faint" />
+                          <span>{note}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
                 <Link
                   href="/contact"
