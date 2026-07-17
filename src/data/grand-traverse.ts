@@ -103,7 +103,7 @@ export const GRAND_TRAVERSE = {
   // Odynovo-style "Notes for Quotation" — shown under the price on the tour page.
   // ⚠︎ VERIFY: client to confirm the "valid before" date before publishing.
   quotation: {
-    validBefore: "December 31, 2026",
+    validBefore: "August 31, 2026",
     notes: [
       "Rates are per person based on two travelers sharing; a change in group size may affect the per-person price.",
       "Prices are subject to availability at the time of confirmation and may vary during peak season, festivals and public holidays.",

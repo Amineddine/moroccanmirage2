@@ -226,6 +226,9 @@ export default function GrandTraversePage() {
                     <p className="mono-note mt-2 !text-[9px]">
                       {GT.priceNote} — final quote on inquiry
                     </p>
+                    <p className="mono-note mt-1 !text-[9px] !text-amber">
+                      Quote valid until {GT.quotation.validBefore}
+                    </p>
                   </div>
 
                   {/* Notes for Quotation — Odynovo-style validity & pricing caveats */}
