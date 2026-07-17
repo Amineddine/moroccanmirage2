@@ -47,7 +47,7 @@ export const GRAND_TRAVERSE = {
   style: "Private · Tailor-made · Chauffeured",
   priceFrom: 4800,
   currency: "USD",
-  priceNote: "per person, sharing (indicative)",
+  priceNote: "per person — final price",
   difficulty:
     "Moderate — comfortable pace with some long but scenic driving days; light optional walking in medinas, gorges and dunes.",
   idealFor:
@@ -107,7 +107,6 @@ export const GRAND_TRAVERSE = {
     payment:
       "A 30% deposit by bank transfer secures your booking — we email you the transfer details once your itinerary is confirmed.",
     notes: [
-      "Rates are per person based on two travelers sharing; a change in group size may affect the per-person price.",
       "Prices are subject to availability at the time of confirmation and may vary during peak season, festivals and public holidays.",
     ],
   },

@@ -76,7 +76,7 @@ const JSON_LD = {
     "@type": "Offer",
     price: "4800",
     priceCurrency: "USD",
-    description: "From, per person sharing (indicative)",
+    description: "Final price, per person",
   },
 };
 
@@ -218,13 +218,13 @@ export default function GrandTraversePage() {
                   <ManifestRow label="Guides" value="Local experts in Fez & Marrakech" />
                   <div className="border-t border-dashed border-bone/20 pt-6">
                     <div className="flex items-baseline justify-between">
-                      <span className="mono-note">From</span>
+                      <span className="mono-note">Price</span>
                       <span className="font-display text-xl italic text-amber">
                         ${GT.priceFrom.toLocaleString("en-US")}
                       </span>
                     </div>
                     <p className="mono-note mt-2 !text-[9px]">
-                      {GT.priceNote} — final quote on inquiry
+                      {GT.priceNote}
                     </p>
                     <p className="mono-note mt-1 !text-[9px] !text-amber">
                       Quote valid until {GT.quotation.validBefore}
