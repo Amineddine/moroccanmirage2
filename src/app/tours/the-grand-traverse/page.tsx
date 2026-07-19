@@ -214,6 +214,7 @@ export default function GrandTraversePage() {
                 <div className="mt-8 space-y-6">
                   <ManifestRow label="Route" value={`${GT.start} ⟶ ${GT.end} — closed loop`} />
                   <ManifestRow label="Duration" value={`${GT.days} Days / ${GT.nights} Nights`} />
+                  <ManifestRow label="Dates" value={GT.dates} />
                   <ManifestRow label="Style" value={GT.style} />
                   <ManifestRow label="Guides" value="Local experts in Fez & Marrakech" />
                   <div className="border-t border-dashed border-bone/20 pt-6">

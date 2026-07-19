@@ -44,6 +44,7 @@ export const GRAND_TRAVERSE = {
     "Twelve days down the spine of Morocco — coast, imperial cities, Sahara & Atlas.",
   days: 12,
   nights: 11,
+  dates: "April 1 – April 12, 2027",
   style: "Private · Tailor-made · Chauffeured",
   priceFrom: 4800,
   currency: "USD",
