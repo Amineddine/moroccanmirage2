@@ -12,9 +12,23 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
  * The same golden survey line is drawn as the reader travels, but each day is a
  * full log entry: theme, route, drive, plate photograph, highlights and ledger.
  */
-export default function GrandLog({ days }: { days: GrandDay[] }) {
+export default function GrandLog({
+  days,
+  startDate,
+}: {
+  days: GrandDay[];
+  startDate?: string;
+}) {
   const scope = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+
+  // Per-day date derived from the fixed departure (Day 1 = startDate).
+  const dateFor = (dayNo: number) => {
+    if (!startDate) return null;
+    const [y, m, d] = startDate.split("-").map(Number);
+    const date = new Date(y, m - 1, d + (dayNo - 1));
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  };
 
   useGSAP(
     () => {
@@ -85,6 +99,11 @@ export default function GrandLog({ days }: { days: GrandDay[] }) {
                 <p className="font-mono text-[10.5px] tracking-[0.32em] text-gold uppercase">
                   Day {String(d.day).padStart(2, "0")}
                 </p>
+                {dateFor(d.day) && (
+                  <p className="font-mono text-[10.5px] tracking-[0.32em] text-bone-dim uppercase">
+                    {dateFor(d.day)}
+                  </p>
+                )}
                 <p className="font-display text-base italic text-amber">{d.theme}</p>
               </div>
 

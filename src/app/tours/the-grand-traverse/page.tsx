@@ -204,7 +204,7 @@ export default function GrandTraversePage() {
                 <span className="mono-note">Twelve entries</span>
               </div>
             </Reveal>
-            <GrandLog days={GRAND_DAYS} />
+            <GrandLog days={GRAND_DAYS} startDate={GT.startDate} />
           </div>
 
           <div className="space-y-10 lg:sticky lg:top-28 lg:self-start">
